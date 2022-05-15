@@ -1,17 +1,48 @@
 #include <iostream>
-#include "Matrix.hpp"
+#include "NeuralNetwork.h"
 
-int main(int argc, char **argv) {
-  // Testing the Neural Network.
-  Matrix m(3,3);
 
-  for(int i=0; i<3;i++){
-      for(int j=0; j<3;j++){
-          m.at(i,j) = i;
-          std::cout<< m.at(i,j);
-      }
-      std::cout<<std::endl;
-  }
+using namespace std;
 
-  return 0;
+
+int main()
+{
+    vector<uint32_t> topology = {2, 3, 1};
+
+    SimpleNeuralNetwork nn(topology, 0.1);
+
+    vector<vector<float>> targetInputs {
+        {0.0f, 0.0f},
+        {1.0f, 1.0f},
+        {1.0f, 0.0f},
+        {0.0f, 1.0f}
+    };
+
+    vector<vector<float>> targetOutputs {
+        {0.0f},
+        {0.0f},
+        {1.0f},
+        {1.0f}
+    };
+
+    uint32_t epoch = 100000;
+
+
+    cout << "training started\n";
+    for(uint32_t i = 0; i < epoch; ++i)
+    {
+        uint32_t index = rand() % 4;
+        nn.feedForward(targetInputs[index]);
+        nn.backPropagate(targetOutputs[index]);
+    }
+    cout << "training completed\n";
+
+    for(auto input : targetInputs)
+    {
+        nn.feedForward(input);
+        auto preds = nn.getPrediction();
+        cout << input[0] << "," << input[1] << " -> " << preds[0] << endl;
+    }
+
+    return 0;
 }
