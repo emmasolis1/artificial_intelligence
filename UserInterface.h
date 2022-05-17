@@ -9,10 +9,10 @@ using namespace std;
 
 class UserInterface {
   public:
-    vector<int> request_topology_info();
-    void print_welcome();
-    vector<vector<float>> loadTargetInputs();
-    vector<vector<float>> loadTargetOutputs();
+    static vector<int> request_topology_info();
+    static void print_welcome();
+    static vector<vector<float>> loadTargetInputs();
+    static vector<vector<float>> loadTargetOutputs();
 
   private:
   UserInterface();
