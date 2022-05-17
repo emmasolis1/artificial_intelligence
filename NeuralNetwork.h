@@ -4,6 +4,9 @@
 #include "Matrix.h"
 #include <cstdlib>
 #include <iostream>
+#include <fstream>
+#include <sys/stat.h>
+#include <string>
 
 /*
 
@@ -66,11 +69,15 @@ public:
 
     //SimpleNeuralNetwork();
 
+
     SimpleNeuralNetwork(vector<u_int32_t> topology, float learningRate = 0.1f);
 
     bool feedForward(vector<float> input);
 
     bool backPropagate(vector<float> targetOutput);
+
+    bool saveWeights(const string& filename);
+
 
     vector<float> getPrediction();
 

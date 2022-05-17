@@ -1,5 +1,6 @@
 #include <iostream>
 #include "NeuralNetwork.h"
+#include <string>
 
 
 using namespace std;
@@ -35,6 +36,9 @@ int main()
         nn.feedForward(targetInputs[index]);
         nn.backPropagate(targetOutputs[index]);
     }
+
+    string name = "savedWeights.csv";
+    nn.saveWeights(name);
     cout << "training completed\n";
 
     for(auto input : targetInputs)
