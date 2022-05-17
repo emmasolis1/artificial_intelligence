@@ -1,6 +1,8 @@
 #include "UserInterface.h"
 
-static void UserInterface::print_welcome() {
+using namespace std;
+
+void UserInterface::print_welcome() {
     cout << R"(
             ░▀▀█▀▀░█▀▀░█▀▀░█░░█▀▀▄░█░█▀▀░░░▒█▄░▒█░█▀▀░█░▒█░█▀▀▄░█▀▀▄░█░░░░▒█▄░▒█░█▀▀░▀█▀░█░░░█░▄▀▀▄░█▀▀▄░█░▄
             ░░▒█░░░█▀▀░▀▀▄░█░░█▄▄█░░░▀▀▄░░░▒█▒█▒█░█▀▀░█░▒█░█▄▄▀░█▄▄█░█░░░░▒█▒█▒█░█▀▀░░█░░▀▄█▄▀░█░░█░█▄▄▀░█▀▄
@@ -8,7 +10,7 @@ static void UserInterface::print_welcome() {
         )" << '\n';
 }
 
-static vector<int> UserInterface::request_topology_info() {
+vector<int> UserInterface::request_topology_info() {
     vector<int> toplogy;
     int answer = 0;
     cout<<"How many input neurons?"<<endl;
@@ -29,7 +31,7 @@ static vector<int> UserInterface::request_topology_info() {
     return toplogy;
 }
 
-static vector<vector<float>> UserInterface::loadTargetInputs() {
+vector<vector<float>> UserInterface::loadTargetInputs() {
     vector<vector<float>> my_matrix = {};
     string dataset_path;
     cout<<"Enter targets INPUTS path (do no include the expected results): ";
@@ -62,7 +64,7 @@ static vector<vector<float>> UserInterface::loadTargetInputs() {
     return my_matrix;
 }
 
-static vector<vector<float>> UserInterface::loadTargetOutputs() {
+vector<vector<float>> UserInterface::loadTargetOutputs() {
     vector<vector<float>> my_matrix = {};
     string dataset_path;
     cout<<"Enter targets OUTPUTS path (do no include the expected results): ";

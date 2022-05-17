@@ -1,22 +1,22 @@
 #ifndef USERINTERFACE_H
 #define USERINTERFACE_H
 
+#pragma once
 #include <iostream>
 #include <fstream>
 #include <sstream>
-
-using namespace std;
+#include <vector>
 
 class UserInterface {
   public:
-    static vector<int> request_topology_info();
-    static void print_welcome();
-    static vector<vector<float>> loadTargetInputs();
-    static vector<vector<float>> loadTargetOutputs();
-
-  private:
-  UserInterface();
+    UserInterface();
+    std::vector<int> request_topology_info();
+    void print_welcome();
+    std::vector<std::vector<float>> loadTargetInputs();
+    std::vector<std::vector<float>> loadTargetOutputs();
 };
+
+UserInterface::UserInterface() {}
 
 
 #endif
