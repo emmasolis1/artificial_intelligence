@@ -61,3 +61,37 @@ vector<vector<float>> UserInterface::loadTargetInputs() {
 
     return my_matrix;
 }
+
+vector<vector<float>> UserInterface::loadTargetOutputs() {
+    vector<vector<float>> my_matrix = {};
+    string dataset_path;
+    cout<<"Enter targets OUTPUTS path (do no include the expected results): ";
+    cin>>dataset_path;
+
+    // Tools for reading the file.
+    ifstream fin;
+    fin.open(dataset_path);
+    string line;
+
+    // Read file line by line.
+    while (fin) {
+        // Read a Line from File
+        getline(fin, line);
+        vector<float> new_vector;
+ 
+        stringstream ss(line);
+        while (ss.good()) {
+            string substr;
+            getline(ss, substr, ',');
+            new_vector.push_back(stof(substr));
+        }
+        // Add the new vector<float> to the matrix (main vector).
+        my_matrix.push_back(new_vector);
+    }
+
+    // Close the file
+    fin.close();
+    cout<<"Target outputs loaded succesfully..."<<endl;
+
+    return my_matrix;
+}
