@@ -66,12 +66,6 @@ vector<vector<float>> UserInterface::loadTargetOutputs() {
     fin.close();
     my_matrix.pop_back(); // The file reading add twice the last line so I am deleting it.
     cout<<"Target outputs loaded succesfully..."<<endl;
-    for (int i=0; i<my_matrix.size(); i++) {
-      for (int j=0; j<my_matrix[i].size(); j++) {
-        cout<<my_matrix[i][j]<<" ";
-      }
-      cout<<"\n";
-    }
 
     return my_matrix;
 }
