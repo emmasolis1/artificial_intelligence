@@ -125,6 +125,7 @@ void UserInterface::show_menu() {
         
         case 2:
             create_new_neural_network();
+            //request_save_weights();
             break;
 
         case 3:
@@ -202,6 +203,9 @@ void UserInterface::create_new_neural_network() {
     }
     cout << "training completed\n";
 
+    //Save the weights of the current neuralNetwork
+    request_save_weights(nn);
+
     string results = toStringResults(nn, targetInputs);
     print_results(results);
 
@@ -241,3 +245,22 @@ string UserInterface::toStringResults(SimpleNeuralNetwork myNeuNet,  vector<vect
 }
 
 void UserInterface::print_results(string my_results) { cout<<my_results<<endl; }
+
+
+void UserInterface::request_save_weights(SimpleNeuralNetwork& nn)
+{
+    uint32_t selection;
+    string weights_name;
+
+    cout<<"Do you want to save the current network?   ";
+    cout<<"1 -> yes, other -> no" << endl;
+    cout << "input: ";
+    cin>>selection;
+    
+    if(selection)
+    {
+        cout<<"Enter weights FILE name: ";
+        cin>>weights_name;
+        nn.saveWeights(weights_name);
+    }
+}
