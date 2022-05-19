@@ -19,6 +19,7 @@ class UserInterface {
   std::vector<uint32_t> request_topology_info();
   uint32_t request_cant_epoch();
   float request_learning_rate();
+  void request_save_weights(SimpleNeuralNetwork& nn);
   void create_new_neural_network();
   void show_menu();
   string toStringResults(SimpleNeuralNetwork myNeuNet,  vector<vector<float>> myTargetInputs);

@@ -35,6 +35,8 @@
 
 //SimpleNeuralNetwork();
 
+
+
 SimpleNeuralNetwork::SimpleNeuralNetwork(vector<u_int32_t> topology, float learningRate)
 {
 
@@ -128,4 +130,62 @@ bool SimpleNeuralNetwork::backPropagate(vector<float> targetOutput)
 vector<float> SimpleNeuralNetwork::getPrediction()
 {
     return _valueMatrices.back()._vals;
+}
+
+
+
+
+/*
+
+Formato de guardado en el csv
+
+Primera fila topologia
+---> c1,c2,c3,...,cn
+
+Resto de filas
+---> columna,fila,w1,w2,w3,...,wn
+
+*/
+bool SimpleNeuralNetwork::saveWeights(const string& filename)
+{
+
+    //Consulta si el archivo ya existe
+    struct stat buf;
+    if(stat(filename.c_str(), &buf) != -1)
+    {
+        return false;
+    }
+
+    ofstream file(filename);    
+
+
+    for(uint32_t i = 0; i < _topology.size(); ++i)
+    {
+        file << _topology[i];
+
+        if(i != _topology.size() - 1)
+            file << ",";
+    }
+
+    for(uint32_t i = 0; i < _weightMatrices.size(); ++i)
+    {
+        file << "\n";
+        file << _weightMatrices[i]._cols << ",";
+        file << _weightMatrices[i]._rows << ",";
+        for(uint32_t r = 0; r < _weightMatrices[i]._rows; ++r)
+        {
+            for(uint32_t c = 0; c < _weightMatrices[i]._cols; ++c)
+            {
+                file << _weightMatrices[i].at(c,r);
+
+                if(c != _weightMatrices[i]._cols - 1
+                || r != _weightMatrices[i]._rows - 1)
+                    file << ",";
+            }
+        }
+    }
+
+    file.close();
+
+    return true;
 }

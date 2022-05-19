@@ -1,3 +1,4 @@
+//<<<<<<< HEAD
 #include "UserInterface.h"
 
 int main()
