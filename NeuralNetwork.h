@@ -72,12 +72,15 @@ public:
 
     SimpleNeuralNetwork(vector<u_int32_t> topology, float learningRate = 0.1f);
 
+    SimpleNeuralNetwork(vector<vector<float>> fileWeights, vector<vector<float>> fileBias);
+
     bool feedForward(vector<float> input);
 
     bool backPropagate(vector<float> targetOutput);
 
     bool saveWeights(const string& filename);
 
+    bool saveBias(const string& filename);
 
     vector<float> getPrediction();
 

@@ -40,33 +40,63 @@
 SimpleNeuralNetwork::SimpleNeuralNetwork(vector<u_int32_t> topology, float learningRate)
 {
 
-_topology = topology;
-_weightMatrices = {};
-_valueMatrices = {};
-_biasMatrices = {};
-_learningRate = learningRate;
+    _topology = topology;
+    _weightMatrices = {};
+    _valueMatrices = {};
+    _biasMatrices = {};
+    _learningRate = learningRate;
 
-for (u_int32_t i = 0; i < topology.size() - 1; ++i)
+    for (u_int32_t i = 0; i < topology.size() - 1; ++i)
+    {
+        Matrix weightMatrix(topology[i + 1], topology[i]);
+        weightMatrix = weightMatrix.applyFunction(
+            [](const float &f)
+            {
+                return (float)rand() / RAND_MAX;
+            });
+        _weightMatrices.push_back(weightMatrix);
+
+        Matrix biasMatrix(topology[i + 1], 1);
+        biasMatrix = biasMatrix.applyFunction(
+            [](const float &f)
+            {
+                return (float)rand() / RAND_MAX;
+            });
+        _biasMatrices.push_back(biasMatrix);
+
+        _valueMatrices.resize(topology.size());
+    }
+}
+
+
+SimpleNeuralNetwork::SimpleNeuralNetwork(vector<vector<float>> fileWeights, vector<vector<float>> fileBias)
 {
-    Matrix weightMatrix(topology[i + 1], topology[i]);
-    weightMatrix = weightMatrix.applyFunction(
-        [](const float &f)
-        {
-            return (float)rand() / RAND_MAX;
-        });
-    _weightMatrices.push_back(weightMatrix);
+    _topology = {};
+    _weightMatrices = {};
+    _valueMatrices = {};
+    _biasMatrices = {};
+    //_learningRate = learningRate;
 
-    Matrix biasMatrix(topology[i + 1], 1);
-    biasMatrix = biasMatrix.applyFunction(
-        [](const float &f)
-        {
-            return (float)rand() / RAND_MAX;
-        });
-    _biasMatrices.push_back(biasMatrix);
+    
+    for(uint32_t i = 0; i < fileWeights[0].size(); ++i)
+    {
+        _topology.push_back(fileWeights[0][i]);
+    }
 
-    _valueMatrices.resize(topology.size());
+    for (u_int32_t i = 0; i < _topology.size() - 1; ++i)
+    {
+        Matrix weightMatrix(_topology[i + 1], _topology[i]);
+        weightMatrix._vals = fileWeights[i + 1];
+        _weightMatrices.push_back(weightMatrix);
+
+        Matrix biasMatrix(_topology[i + 1], 1);
+        biasMatrix._vals = fileBias[i + 1];
+        _biasMatrices.push_back(biasMatrix);
+
+        _valueMatrices.resize(_topology.size());
+    }
 }
-}
+
 
 bool SimpleNeuralNetwork::feedForward(vector<float> input)
 {
@@ -143,7 +173,7 @@ Primera fila topologia
 ---> c1,c2,c3,...,cn
 
 Resto de filas
----> columna,fila,w1,w2,w3,...,wn
+---> w1,w2,w3,...,wn
 
 */
 bool SimpleNeuralNetwork::saveWeights(const string& filename)
@@ -170,8 +200,6 @@ bool SimpleNeuralNetwork::saveWeights(const string& filename)
     for(uint32_t i = 0; i < _weightMatrices.size(); ++i)
     {
         file << "\n";
-        file << _weightMatrices[i]._cols << ",";
-        file << _weightMatrices[i]._rows << ",";
         for(uint32_t r = 0; r < _weightMatrices[i]._rows; ++r)
         {
             for(uint32_t c = 0; c < _weightMatrices[i]._cols; ++c)
@@ -180,6 +208,49 @@ bool SimpleNeuralNetwork::saveWeights(const string& filename)
 
                 if(c != _weightMatrices[i]._cols - 1
                 || r != _weightMatrices[i]._rows - 1)
+                    file << ",";
+            }
+        }
+    }
+
+    file.close();
+
+    return true;
+}
+
+
+bool SimpleNeuralNetwork::saveBias(const string& filename)
+{
+
+    //Consulta si el archivo ya existe
+    struct stat buf;
+    if(stat(filename.c_str(), &buf) != -1)
+    {
+        return false;
+    }
+
+    ofstream file(filename);    
+
+
+    for(uint32_t i = 0; i < _topology.size(); ++i)
+    {
+        file << _topology[i];
+
+        if(i != _topology.size() - 1)
+            file << ",";
+    }
+
+    for(uint32_t i = 0; i < _biasMatrices.size(); ++i)
+    {
+        file << "\n";
+        for(uint32_t r = 0; r < _biasMatrices[i]._rows; ++r)
+        {
+            for(uint32_t c = 0; c < _biasMatrices[i]._cols; ++c)
+            {
+                file << _biasMatrices[i].at(c,r);
+
+                if(c != _biasMatrices[i]._cols - 1
+                || r != _biasMatrices[i]._rows - 1)
                     file << ",";
             }
         }

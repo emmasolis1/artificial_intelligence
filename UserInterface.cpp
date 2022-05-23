@@ -70,6 +70,73 @@ vector<vector<float>> UserInterface::loadTargetOutputs() {
     return my_matrix;
 }
 
+vector<vector<float>>  UserInterface::loadSavedWeights() {
+    vector<vector<float>> my_matrix = {};
+    string dataset_path;
+    cout<<"Enter saved WEIGHTS path: ";
+    cin>>dataset_path;
+
+    // Tools for reading the file.
+    ifstream fin;
+    fin.open(dataset_path);
+    string line;
+
+    // Read file line by line.
+    while (fin) {
+        // Read a Line from File
+        getline(fin, line);
+        vector<float> new_vector;
+ 
+        stringstream ss(line);
+        while (ss.good()) {
+            string substr;
+            getline(ss, substr, ',');
+            new_vector.push_back(stof(substr));
+        }
+        // Add the new vector<float> to the matrix (main vector).
+        my_matrix.push_back(new_vector);
+    }
+    // Close the file
+    fin.close();
+    my_matrix.pop_back(); // The file reading add twice the last line so I am deleting it.
+
+    return my_matrix;
+}
+
+vector<vector<float>>  UserInterface::loadSavedBias() {
+    vector<vector<float>> my_matrix = {};
+    string dataset_path;
+    cout<<"Enter saved BIAS path: ";
+    cin>>dataset_path;
+
+    // Tools for reading the file.
+    ifstream fin;
+    fin.open(dataset_path);
+    string line;
+
+    // Read file line by line.
+    while (fin) {
+        // Read a Line from File
+        getline(fin, line);
+        vector<float> new_vector;
+ 
+        stringstream ss(line);
+        while (ss.good()) {
+            string substr;
+            getline(ss, substr, ',');
+            new_vector.push_back(stof(substr));
+        }
+        // Add the new vector<float> to the matrix (main vector).
+        my_matrix.push_back(new_vector);
+    }
+    // Close the file
+    fin.close();
+    my_matrix.pop_back(); // The file reading add twice the last line so I am deleting it.
+
+    return my_matrix;
+}
+
+
 uint32_t UserInterface::request_cant_epoch() {
     uint32_t epoch;
     cout<<"Enter the number of epoch to simulate: ";
@@ -121,6 +188,7 @@ void UserInterface::show_menu() {
         switch (option) {
         case 1:
             // Method for loading a neural network (Alvaro).
+            load_neural_network();
             break;
         
         case 2:
@@ -203,14 +271,29 @@ void UserInterface::create_new_neural_network() {
     }
     cout << "training completed\n";
 
-    //Save the weights of the current neuralNetwork
-    request_save_weights(nn);
+    //Save the weights and bias of the current neuralNetwork
+    request_save_neural_network(nn);
 
     string results = toStringResults(nn, targetInputs);
     print_results(results);
 
     // Mostrar los resultados y guardarlos o volver a correr la simulacion con otro valores.
 }
+
+
+void UserInterface::load_neural_network()
+{
+    // Request main info.
+    vector<vector<float>> savedWeights = loadSavedWeights();
+    vector<vector<float>> savedBias = loadSavedBias();
+    SimpleNeuralNetwork nn(savedWeights, savedBias);
+    vector<vector<float>> targetInputs = loadTargetInputs();
+
+
+    string results = toStringResults(nn, targetInputs);
+    print_results(results);
+}
+
 
 
 string UserInterface::toStringResults(SimpleNeuralNetwork myNeuNet,  vector<vector<float>> myTargetInputs) {
@@ -247,10 +330,11 @@ string UserInterface::toStringResults(SimpleNeuralNetwork myNeuNet,  vector<vect
 void UserInterface::print_results(string my_results) { cout<<my_results<<endl; }
 
 
-void UserInterface::request_save_weights(SimpleNeuralNetwork& nn)
+void UserInterface::request_save_neural_network(SimpleNeuralNetwork& nn)
 {
     uint32_t selection;
     string weights_name;
+    string bias_name;
 
     cout<<"Do you want to save the current network?   ";
     cout<<"1 -> yes, other -> no" << endl;
@@ -262,5 +346,9 @@ void UserInterface::request_save_weights(SimpleNeuralNetwork& nn)
         cout<<"Enter weights FILE name: ";
         cin>>weights_name;
         nn.saveWeights(weights_name);
+
+        cout<<"Enter bias FILE name: ";
+        cin>>bias_name;
+        nn.saveBias(bias_name);
     }
 }
