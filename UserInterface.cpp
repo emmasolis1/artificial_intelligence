@@ -263,9 +263,10 @@ void UserInterface::create_new_neural_network() {
     // Show summary of neural info.
     
     cout << "training started\n";
+    int target_input_size = targetInputs.size();
     for(uint32_t i = 0; i < epoch; ++i)
     {
-        uint32_t index = rand() % 4;
+        uint32_t index = rand() % target_input_size;
         nn.feedForward(targetInputs[index]);
         nn.backPropagate(targetOutputs[index]);
     }
