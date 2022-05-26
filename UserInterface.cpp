@@ -257,7 +257,9 @@ void UserInterface::create_new_neural_network() {
     float learning_rate = request_learning_rate();
     SimpleNeuralNetwork nn(topology, learning_rate);
     vector<vector<float>> targetInputs = loadTargetInputs();
+    request_data_standarization(targetInputs);
     vector<vector<float>> targetOutputs = loadTargetOutputs();
+    request_data_standarization(targetOutputs);
     uint32_t epoch = request_cant_epoch();
 
     // Show summary of neural info.
@@ -272,11 +274,24 @@ void UserInterface::create_new_neural_network() {
     }
     cout << "training completed\n";
 
+    
+    string results = toStringResults(nn, targetInputs);
+    print_results(results);
+    
+
+    /*
+    for(auto input : targetInputs)
+    {
+        nn.feedForward(input);
+        auto preds = nn.getPrediction();
+        cout << input[0] << "," << input[1] << " -> " << preds[0] << endl;
+    }
+    */
+
+
     //Save the weights and bias of the current neuralNetwork
     request_save_neural_network(nn);
 
-    string results = toStringResults(nn, targetInputs);
-    print_results(results);
 
     // Mostrar los resultados y guardarlos o volver a correr la simulacion con otro valores.
 }
@@ -342,7 +357,7 @@ void UserInterface::request_save_neural_network(SimpleNeuralNetwork& nn)
     cout << "input: ";
     cin>>selection;
     
-    if(selection)
+    if(selection == 1)
     {
         cout<<"Enter weights FILE name: ";
         cin>>weights_name;
@@ -352,4 +367,78 @@ void UserInterface::request_save_neural_network(SimpleNeuralNetwork& nn)
         cin>>bias_name;
         nn.saveBias(bias_name);
     }
+}
+
+void UserInterface::request_data_standarization(vector<vector<float>>& data){
+    int selection = 0;
+
+    vector<vector<float>> results = {};
+
+    cout<<"Want to standarize the current data?   ";
+    cout<<"1 -> yes, other -> no" << endl;
+    cout << "input: ";
+    cin>>selection;
+
+    
+    if(selection == 1)
+    {
+        results = dataStandarization(data);
+        data = results;
+    }
+    
+    /*
+    for(uint32_t row = 0; row < 10; ++row)
+    {
+        for(uint32_t col = 0; col < data[0].size(); ++col)
+        {
+            cout << data[row][col] << ", ";
+        }
+        cout << "\n";
+    }
+    */
+}
+
+vector<vector<float>> UserInterface::dataStandarization(vector<vector<float>>& data)
+{
+    vector<vector<float>> results = {};
+    results.resize(data.size());
+    int rowSize = data[0].size(); 
+
+    for(int i = 0; i < results.size(); ++i)
+    {
+        results[i].resize(rowSize);
+    }
+
+
+    vector<int> colMean(results[0].size(),0);
+    vector<int> colStd(results[0].size(),0);
+
+
+    for(uint32_t col = 0; col < data[0].size(); ++col)
+    {
+        for(uint32_t row = 0; row < data.size(); ++row)
+        {
+            colMean[col] += data[row][col];
+        }
+        colMean[col] = colMean[col]/rowSize;
+    }
+
+    for(uint32_t col = 0; col < data[0].size(); ++col)
+    {
+        for(uint32_t row = 0; row < data.size(); ++row)
+        {
+            colStd[col] += pow(data[row][col] - colMean[col],2);
+        }
+        colStd[col] = sqrt(colStd[col]/rowSize);
+    }
+
+    for(uint32_t row = 0; row < data.size(); ++row)
+    {
+        for(uint32_t col = 0; col < data[0].size(); ++col)
+        {
+            results[row][col] = (data[row][col] - colMean[col])/colStd[col];
+        }
+    }
+
+    return results;
 }
