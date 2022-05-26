@@ -20,7 +20,12 @@ int main()
     cout << "\n\n";
 
     vector<vector<float>> results = {};
+
+    /*
     results = ui.dataStandarization(data);
+    */
+
+   results = ui.dataNormalization(data);
 
     for(uint32_t row = 0; row < results.size(); ++row)
     {
