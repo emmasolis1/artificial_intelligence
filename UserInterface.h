@@ -18,6 +18,8 @@ class UserInterface {
   std::vector<std::vector<float>> loadTargetOutputs();
   vector<vector<float>> loadSavedWeights();
   vector<vector<float>> loadSavedBias();
+  vector<vector<float>> dataStandarization(vector<vector<float>>& data);
+  void request_data_standarization(vector<vector<float>>& data);
   std::vector<uint32_t> request_topology_info();
   uint32_t request_cant_epoch();
   float request_learning_rate();
