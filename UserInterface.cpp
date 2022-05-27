@@ -257,9 +257,9 @@ void UserInterface::create_new_neural_network() {
     float learning_rate = request_learning_rate();
     SimpleNeuralNetwork nn(topology, learning_rate);
     vector<vector<float>> targetInputs = loadTargetInputs();
-    request_data_standarization(targetInputs);
+    request_data_standardization_or_normalization(targetInputs);
     vector<vector<float>> targetOutputs = loadTargetOutputs();
-    request_data_standarization(targetOutputs);
+    request_data_standardization_or_normalization(targetOutputs);
     uint32_t epoch = request_cant_epoch();
 
     // Show summary of neural info.
@@ -369,20 +369,26 @@ void UserInterface::request_save_neural_network(SimpleNeuralNetwork& nn)
     }
 }
 
-void UserInterface::request_data_standarization(vector<vector<float>>& data){
+void UserInterface::request_data_standardization_or_normalization(vector<vector<float>>& data){
     int selection = 0;
 
     vector<vector<float>> results = {};
 
-    cout<<"Want to standarize the current data?   ";
-    cout<<"1 -> yes, other -> no" << endl;
+    cout<<"Want to standardize or normalize the current data?   ";
+    cout<<"1 -> standardize, 2 -> normalize, other -> no" << endl;
     cout << "input: ";
     cin>>selection;
 
     
     if(selection == 1)
     {
-        results = dataStandarization(data);
+        results = dataStandardization(data);
+        data = results;
+    }
+
+    if(selection == 2)
+    {
+        results = dataNormalization(data);
         data = results;
     }
     
@@ -396,9 +402,10 @@ void UserInterface::request_data_standarization(vector<vector<float>>& data){
         cout << "\n";
     }
     */
+    
 }
 
-vector<vector<float>> UserInterface::dataStandarization(vector<vector<float>>& data)
+vector<vector<float>> UserInterface::dataStandardization(vector<vector<float>>& data)
 {
     vector<vector<float>> results = {};
     results.resize(data.size());
@@ -410,8 +417,8 @@ vector<vector<float>> UserInterface::dataStandarization(vector<vector<float>>& d
     }
 
 
-    vector<int> colMean(results[0].size(),0);
-    vector<int> colStd(results[0].size(),0);
+    vector<float> colMean(results[0].size(),0);
+    vector<float> colStd(results[0].size(),0);
 
 
     for(uint32_t col = 0; col < data[0].size(); ++col)
@@ -437,6 +444,48 @@ vector<vector<float>> UserInterface::dataStandarization(vector<vector<float>>& d
         for(uint32_t col = 0; col < data[0].size(); ++col)
         {
             results[row][col] = (data[row][col] - colMean[col])/colStd[col];
+        }
+    }
+
+    return results;
+}
+
+vector<vector<float>> UserInterface::dataNormalization(vector<vector<float>>& data)
+{
+    vector<vector<float>> results = {};
+    results.resize(data.size());
+    int rowSize = data[0].size(); 
+
+    for(int i = 0; i < results.size(); ++i)
+    {
+        results[i].resize(rowSize);
+    }
+
+
+    vector<float> colMin(results[0].size(),MAXFLOAT);
+    vector<float> colMax(results[0].size(),0);
+    vector<float> ranges(results[0].size(),0);
+
+    for(uint32_t col = 0; col < data[0].size(); ++col)
+    {
+        for(uint32_t row = 0; row < data.size(); ++row)
+        {
+            if(colMin[col] > data[row][col]){colMin[col] = data[row][col];}
+            if(colMax[col] < data[row][col]){colMax[col] = data[row][col];}
+        }
+    }
+
+    for(uint32_t i = 0; i < ranges.size(); ++i)
+    {
+        ranges[i] = colMax[i] - colMin[i];
+    }
+
+
+    for(uint32_t row = 0; row < data.size(); ++row)
+    {
+        for(uint32_t col = 0; col < data[0].size(); ++col)
+        {
+            results[row][col] = (data[row][col] - colMin[col])/ranges[col];
         }
     }
 
