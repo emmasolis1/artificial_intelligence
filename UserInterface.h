@@ -5,12 +5,24 @@
 #include <fstream>
 #include <sstream>
 #include <vector>
+#include <algorithm>
+#include <ctime>
 
 #include "NeuralNetwork.h"
 
 using namespace std;
 
 class UserInterface {
+  
+  private:
+  vector<vector<float>> input_70;
+  vector<vector<float>> input_20;
+  vector<vector<float>> input_10;
+  vector<vector<float>> output_70;
+  vector<vector<float>> output_20;
+  vector<vector<float>> output_10;
+  
+  
   public:
   UserInterface();
 
@@ -25,6 +37,7 @@ class UserInterface {
   uint32_t request_cant_epoch();
   float request_learning_rate();
   void request_save_neural_network(SimpleNeuralNetwork& nn);
+  void data_separation(vector<vector<float>>& data_input, vector<vector<float>>& data_output);
   void create_new_neural_network();
   void load_neural_network();
   void show_menu();

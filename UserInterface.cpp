@@ -31,7 +31,6 @@ vector<vector<float>>  UserInterface::loadTargetInputs() {
     // Close the file
     fin.close();
     my_matrix.pop_back(); // The file reading add twice the last line so I am deleting it.
-
     return my_matrix;
 }
 
@@ -260,23 +259,34 @@ void UserInterface::create_new_neural_network() {
     request_data_standardization_or_normalization(targetInputs);
     vector<vector<float>> targetOutputs = loadTargetOutputs();
     request_data_standardization_or_normalization(targetOutputs);
+    data_separation(targetInputs, targetOutputs);
     uint32_t epoch = request_cant_epoch();
 
     // Show summary of neural info.
     
-    cout << "training started\n";
-    int target_input_size = targetInputs.size();
+    cout << "training started(With 70 percent data)\n";
+    int target_input_size = input_70.size();
     for(uint32_t i = 0; i < epoch; ++i)
     {
         uint32_t index = rand() % target_input_size;
-        nn.feedForward(targetInputs[index]);
-        nn.backPropagate(targetOutputs[index]);
+        nn.feedForward(input_70[index]);
+        nn.backPropagate(output_70[index]);
     }
-    cout << "training completed\n";
+    cout << "training completed\n\n";
 
+    string results = {};
     
-    string results = toStringResults(nn, targetInputs);
+    cout << "20 percent data to test network's performance: \n\n";
+    results = toStringResults(nn, input_20);
     print_results(results);
+    cout << "\n\n";
+
+    results = {};
+
+    cout << "10 percent data to test 'artificial' inputs: \n\n";
+    results = toStringResults(nn, input_10);
+    print_results(results);
+    cout << "\n\n";
     
 
     /*
@@ -369,7 +379,8 @@ void UserInterface::request_save_neural_network(SimpleNeuralNetwork& nn)
     }
 }
 
-void UserInterface::request_data_standardization_or_normalization(vector<vector<float>>& data){
+void UserInterface::request_data_standardization_or_normalization(vector<vector<float>>& data)
+{
     int selection = 0;
 
     vector<vector<float>> results = {};
@@ -490,4 +501,39 @@ vector<vector<float>> UserInterface::dataNormalization(vector<vector<float>>& da
     }
 
     return results;
+}
+
+
+void UserInterface::data_separation(vector<vector<float>>& data_in, vector<vector<float>>& data_out)
+{
+    int val_70 = data_in.size() * 0.70;
+    int val_20 = data_in.size() * 0.20;
+    int val_10 = data_in.size() - val_70 - val_20;
+
+    input_70.clear();
+    output_70.clear();
+
+    input_20.clear();
+    output_20.clear();
+
+    input_10.clear();
+    output_10.clear();
+
+
+    for(int i = 0; i < data_in.size(); ++i)
+    {
+        if(i < val_70)
+        {
+            input_70.push_back(data_in[i]);
+            output_70.push_back(data_out[i]);
+        }else if (i >= val_70 && i < (val_70 + val_20))
+        {
+            input_20.push_back(data_in[i]);
+            output_20.push_back(data_out[i]);           
+        }else
+        {
+            input_10.push_back(data_in[i]);
+            output_10.push_back(data_out[i]);
+        }      
+    }
 }
