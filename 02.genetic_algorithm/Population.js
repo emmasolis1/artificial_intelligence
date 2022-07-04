@@ -2,7 +2,7 @@
 // In this case, each organism is just an instance of a DNA object
 
 class Population {
-    constructor(target, mutationRate, popMax, cantidadFiguras) {
+  constructor(target, mutationRate, popMax, cantidadFiguras) {
     this.population = []; // Array to hold the current population
     this.matingPool = []; // ArrayList which we will use for our "mating pool"
     this.generations = 0; // Number of generations
@@ -18,21 +18,21 @@ class Population {
       this.population[i] = new DNA(this.cantidadFiguras);
     }
   }// End of constructor(Population)
-  
 
-/*  
-  //Invoca al metodo calcularAptitud dentro de cada individuo 
-  //de la poblacion
-    calcularAptitud() {
-    for (let i = 0; i < this.population.length; i++) {
-      this.population[i].calcularAptitud(this.target);
+
+  /*  
+    //Invoca al metodo calcularAptitud dentro de cada individuo 
+    //de la poblacion
+      calcularAptitud() {
+      for (let i = 0; i < this.population.length; i++) {
+        this.population[i].calcularAptitud(this.target);
+      }
     }
-  }
-*/
-  
-  
-  
-  
+  */
+
+
+
+
 
   seleccion() {
     // Clear the ArrayList
@@ -44,7 +44,7 @@ class Population {
         maxFitness = this.population[i].fitness;
       }
     }
-    
+
     let minFitness = Number.MAX_VALUE;
     for (let i = 0; i < this.population.length; i++) {
       if (this.population[i].fitness < minFitness) {
@@ -56,45 +56,45 @@ class Population {
     // a higher fitness = more entries to mating pool = more likely to be picked as a parent
     // a lower fitness = fewer entries to mating pool = less likely to be picked as a parent
     for (let i = 0; i < this.population.length; i++) {
-      let fitness = (this.population[i].fitness - minFitness)/(maxFitness - minFitness); 
+      let fitness = (this.population[i].fitness - minFitness) / (maxFitness - minFitness);
       let n = Math.floor(fitness * 100) + 1; // Arbitrary multiplier, we can also use monte carlo method
       for (let j = 0; j < n; j++) {
         this.matingPool.push(this.population[i]);
       }
     }
-    
-// Refill the population with children from the mating pool
+
+    // Refill the population with children from the mating pool
     console.log("GENERACION");
     console.log(this.generations);
-    
+
     for (let i = 0; i < this.population.length; i++) {
       let a = Math.floor(Math.random() * this.matingPool.length);
       let b = Math.floor(Math.random() * this.matingPool.length);
       let partnerA = this.matingPool[a];
       let partnerB = this.matingPool[b];
-      
+
       let child = partnerA.cruzar(partnerB);
       child.mutar(this.mutationRate);
       this.population[i] = child;
     }
     this.generations++;
   }//End of seleccion()
-  
-  
-  
-  
-  
-  
-    getBest() {
+
+
+
+
+
+
+  getBest() {
     return this.best;
   }
-  
-  
-  
-  
-  
-  
-    // Compute the current "most fit" member of the population
+
+
+
+
+
+
+  // Compute the current "most fit" member of the population
   evaluate() {
     let worldrecord = 0.0;
     let index = 0;
@@ -110,23 +110,23 @@ class Population {
       this.finished = true;
     }
   } //End of evaluate
-  
-  
-  
-  
-  
-    isFinished() {
+
+
+
+
+
+  isFinished() {
     return this.finished;
   }
-  
-  
-  
-  
-    getGenerations() {
+
+
+
+
+  getGenerations() {
     return this.generations;
   }
 
-  
-  
-  
-  }//End of class population
+
+
+
+}//End of class population
