@@ -57,7 +57,12 @@ class Population {
     // a lower fitness = fewer entries to mating pool = less likely to be picked as a parent
     for (let i = 0; i < this.population.length; i++) {
       let fitness = (this.population[i].fitness - minFitness) / (maxFitness - minFitness);
-      let n = Math.floor(fitness * 100) + 1; // Arbitrary multiplier, we can also use monte carlo method
+      // let n = Math.floor(fitness * 100) + 1; // Arbitrary multiplier, we can also use monte carlo method
+      let n = 0;
+      while (n < 10) {
+        n = Math.floor(Math.random() * 100); // Arbitrary multiplier, we can also use monte carlo method
+      }
+
       for (let j = 0; j < n; j++) {
         this.matingPool.push(this.population[i]);
       }

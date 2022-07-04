@@ -62,8 +62,8 @@ function apply() {
   var target = population.target;
 
 
-  //Itera 10 veces el algoritmo genetico
-  for (var j = 0; j < 10; ++j) {
+  //Itera 100 veces el algoritmo genetico
+  for (var j = 0; j < 100; ++j) {
 
     for (var i = 0; i < nImages; ++i) {
       context[i].clearRect(0, 0, canvas[i].width, canvas[i].height);
