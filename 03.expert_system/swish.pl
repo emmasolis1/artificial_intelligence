@@ -1,6 +1,5 @@
 % Estudiantes:
-% Emmanuel D. Solis - B97670
-% Jonathan Cespedes - B41713
+% Emmanuel D. Solis
 
 % ----------- Hechos -----------
 % Dia o Noche
